@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Task Manager App</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_task">Add Task</string>
+    <string name="study">Study</string>
+    <string name="all_tasks">All Tasks</string>
+    <string name="smoothbottombar">smoothbottombar</string>
+    <string name="add_a_task">Add a task</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="successfully_done">Successfully Done!</string>
+    <string name="completed_task">Completed Task</string>
+    <string name="upcoming">UPCOMING</string>
+    <string name="_12_30">12:30</string>
+    <string name="jul">Jul</string>
+    <string name="_14">14</string>
+    <string name="thu">Thu</string>
+    <string name="fill_the_details_bellow_to_add_a_task_into_n_your_todo">Fill the details bellow to add a task into\n your TODO</string>
+    <string name="task_title">Task Title</string>
+    <string name="task_description">Task Description:</string>
+    <string name="task_event">Task Event</string>
+    <string name="task_date">Task Date</string>
+    <string name="task_time">Task Time</string>
+    <string name="clear_all">Clear All</string>
+</resources>

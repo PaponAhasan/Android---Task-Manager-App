@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/tasksFragment"
+        android:icon="@drawable/ic_dataset"
+        android:checked="true"
+        android:title="Task List" />
+
+    <item
+        android:id="@+id/completeTaskFragment"
+        android:icon="@drawable/ic_task"
+        android:title="Completed" />
+
+</menu>
