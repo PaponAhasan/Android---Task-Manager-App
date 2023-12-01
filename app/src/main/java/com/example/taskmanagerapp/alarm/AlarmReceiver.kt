@@ -3,45 +3,32 @@ package com.example.taskmanagerapp.alarm
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.os.Build
 import android.provider.Settings
 import android.util.Log
-import android.view.SurfaceHolder
+import androidx.annotation.RequiresApi
+import com.example.taskmanagerapp.alarm.notification.InAppNotification
+import com.example.taskmanagerapp.alarm.sound.AndroidSoundPlayer
 
-class AlarmReceiver: BroadcastReceiver() {
+class AlarmReceiver : BroadcastReceiver() {
 
     private lateinit var mp: MediaPlayer
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onReceive(context: Context?, intent: Intent?) {
-        val message = intent?.getStringExtra("EXTRA_MESSAGE") ?: return
-        println("Alarm triggered: $message")
+        //Handle the alarm action here
+
+        val alarmItem = intent?.getSerializableExtra("alarmItem") as AlarmItem
+        val message = alarmItem.message
         Log.d("TAG", message)
-        mp = MediaPlayer.create(context, Settings.System.DEFAULT_ALARM_ALERT_URI)
-        // Check if MediaPlayer creation was successful
-        mp.isLooping = true
-        mp.start()
-        // Release MediaPlayer when it's done playing
-        mp.setOnCompletionListener {
-            mp.release()
-        }
 
+        //show a notification
+        val service = InAppNotification(context!!)
+        service.showNotification(alarmItem)
 
-//        val audioAttributes = AudioAttributes.Builder()
-//            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-//            .setUsage(AudioAttributes.USAGE_ALARM)
-//            .build()
-//
-//        mp = MediaPlayer.create(context, Settings.System.DEFAULT_ALARM_ALERT_URI, audioAttributes)
-//
-//        // Check if MediaPlayer creation was successful
-//        mp.isLooping = true
-//        mp.start()
-//
-//        // Release MediaPlayer when it's done playing
-//        mp.setOnCompletionListener {
-//            mp.release()
-//        }
-
+        //play a sound
+        val player = AndroidSoundPlayer()
+        player.startPlay(context)
     }
 }
