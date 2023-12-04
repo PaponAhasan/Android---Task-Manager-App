@@ -23,4 +23,6 @@
     <string name="task_date">Task Date</string>
     <string name="task_time">Task Time</string>
     <string name="clear_all">Clear All</string>
+    <string name="stop">STOP</string>
+    <string name="edit">EDIT</string>
 </resources>
