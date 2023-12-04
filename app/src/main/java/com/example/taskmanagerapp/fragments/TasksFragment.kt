@@ -108,10 +108,6 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
         } else binding.lottieAnimationView.visibility = View.GONE
     }
 
-    companion object {
-        const val TAG = "TasksFragment"
-    }
-
     private fun popUpMenu(view: View) {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.inflate(R.menu.top_menu)
@@ -180,11 +176,6 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
             requireActivity().findViewById(R.id.mainLayout),
             msg, Snackbar.LENGTH_LONG
         )
-        /*
-        mySeekBar.setAction(android.R.string.ok) {
-            val intent = Intent(Settings.ACTION_SETTINGS)
-            startActivity(intent)
-        }*/
         mySeekBar.show()
     }
 
@@ -222,5 +213,9 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
 
                 }
             })
+    }
+
+    companion object {
+        const val TAG = "TasksFragment"
     }
 }
