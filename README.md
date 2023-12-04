@@ -27,7 +27,7 @@ adding/editing tasks.
   - Cancel the alarm when deleting a task.  
   
 ## Description
-In the recipe search app, users seamlessly register and log in to personalize their culinary journey. Upon login, a curated Recipe List is presented and fetched through a streamlined API call. The app empowers users with a robust Recipe Search feature, allowing them to find specific recipes using keywords or ingredients. Real-time API calls dynamically filter and display search results, ensuring a tailored culinary exploration. Users can delve into Recipe Details, offering comprehensive insights into ingredients and step-by-step instructions. This clean and efficient design prioritizes a user-centric experience, making recipe discovery, search, and exploration intuitive and enjoyable.  
+The goal of this assignment is to assess the candidate's ability to create a simple task manager mobile app using Kotlin, demonstrate a good understanding of database operations, and implement an alarm reminder feature for tasks. 
 
 ## Technologies Used
 - MVVM architectural pattern: Version 2.6.2
