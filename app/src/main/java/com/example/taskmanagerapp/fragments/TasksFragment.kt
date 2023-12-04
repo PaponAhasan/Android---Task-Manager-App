@@ -180,11 +180,6 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
             requireActivity().findViewById(R.id.mainLayout),
             msg, Snackbar.LENGTH_LONG
         )
-        /*
-        mySeekBar.setAction(android.R.string.ok) {
-            val intent = Intent(Settings.ACTION_SETTINGS)
-            startActivity(intent)
-        }*/
         mySeekBar.show()
     }
 
