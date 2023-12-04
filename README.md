@@ -2,14 +2,13 @@
 
 ### Screenshots of the application  
 
-
 Splash Screen           |   View Pager           | Login Page         |  Registation Page         | 
 :-------------------------:|:------------------------:|:------------------------:|:------------------------:|
 <img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/521fb1b3-22cd-4847-bd63-211991ebbd82" height="400"> |  <img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/d42c33d3-068d-4251-b228-dd2e3982eec5" height="400"> | <img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/03e78b61-621a-43b5-9d0d-b04ed930064e" height="400">  | <img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/29d7b4d4-bb64-4e93-9efd-996d9c77a182" height="400"> |
 
 Success Signup       |   Recipe Iteam page           | Recipe Item Details         |   User Profile        | 
 :-------------------------:|:------------------------:|:------------------------:|:------------------------:|
-<img src="https://github.com/PaponAhasan/Recipe-Search-App---Inflexionpoint/assets/59710234/502f9004-26cb-4f1d-8552-0437bb9306a6" height="400">  |  <img src="https://github.com/PaponAhasan/Recipe-Search-App---Inflexionpoint/assets/59710234/2db51051-f8cb-41b2-8a6b-0297ba8bfc53" height="400"> | <img src="https://github.com/PaponAhasan/Recipe-Search-App---Inflexionpoint/assets/59710234/cb1fb3d6-006f-49b8-b0f5-36d9762550bd" height="400">  |<img src="https://github.com/PaponAhasan/Recipe-Search-App---Inflexionpoint/assets/59710234/d8c8d97f-3214-43c7-bec6-6bd71a93f37e" height="400">  |
+<img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/f4787f67-2de7-4742-83b4-d1c86bd3babf" height="400">  |  <img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/c7a3d0ee-2679-49f3-87a6-3dc38066c81b" height="400"> | <img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/4fb76777-0e8e-4d7d-b97c-debdf78318ce" height="400">  |<img src="https://github.com/PaponAhasan/Recipe-Search-App---Inflexionpoint/assets/59710234/d8c8d97f-3214-43c7-bec6-6bd71a93f37e" height="400">  |
 
 ## Features
 
