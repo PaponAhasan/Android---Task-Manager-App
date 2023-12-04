@@ -3,11 +3,11 @@
 ### Screenshots of the application  
 
 
-Splash Screen           |   View Pager           | Login Page         |  Registation Page         | 
+Display List Screen           |  Existing Task Mark/Edit           | Add New Task Page         |  Add New Task Calander         | 
 :-------------------------:|:------------------------:|:------------------------:|:------------------------:|
 <img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/521fb1b3-22cd-4847-bd63-211991ebbd82" height="400"> |  <img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/d42c33d3-068d-4251-b228-dd2e3982eec5" height="400"> | <img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/03e78b61-621a-43b5-9d0d-b04ed930064e" height="400">  | <img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/29d7b4d4-bb64-4e93-9efd-996d9c77a182" height="400"> |
 
-Success Signup       |   Recipe Iteam page           | Recipe Item Details         |   User Profile        | 
+Add New Task Time       |   Add New Task Cancel            | Task Alarm         |   Existing Completed      | 
 :-------------------------:|:------------------------:|:------------------------:|:------------------------:|
 <img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/f4787f67-2de7-4742-83b4-d1c86bd3babf" height="400">  |  <img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/c7a3d0ee-2679-49f3-87a6-3dc38066c81b" height="400"> | <img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/4fb76777-0e8e-4d7d-b97c-debdf78318ce" height="400">  |<img src="https://github.com/PaponAhasan/Android---Task-Manager-App/assets/59710234/cf61c300-a85b-472e-ac0b-1e6ca458be11" height="400">  |
 
