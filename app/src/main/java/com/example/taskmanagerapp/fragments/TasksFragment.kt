@@ -196,7 +196,6 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
     }
 
     override fun deleteTaskClicked(task: TaskList) {
-
         val image = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_delete)
         val message = "Are your sure deleted this task?"
         ViewUtils.viewDialogResponse(
@@ -236,7 +235,6 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
     }
 
     override fun updateTaskCompleted(task: TaskList) {
-        //save update task
         val insertTask = TaskList(
             task.titleText,
             task.bodyText,
@@ -260,7 +258,6 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
                     taskViewModel.update(insertTask)
                     openSeekBar("Successfully task completed...")
                 }
-
                 override fun onCanceled() {}
             })
     }

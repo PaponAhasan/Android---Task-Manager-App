@@ -8,10 +8,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
+import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.navigation.NavDeepLink
+import androidx.navigation.NavDeepLinkBuilder
 import com.example.taskmanagerapp.MainActivity
 import com.example.taskmanagerapp.R
 import com.example.taskmanagerapp.model.TaskList
@@ -55,18 +58,14 @@ class InAppNotification(private val context: Context) {
             PendingIntent.getService(context, 3, intentService, PendingIntent.FLAG_IMMUTABLE)*/
 
         // Intent Fragment
-        val editIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            action = ACTION_EDIT
-            putExtra("FRAGMENT_KEY", "EditFragment")
-            putExtra("DATA_KEY", alarmItem)
-        }
-
-        val editPendingIntent =
-            PendingIntent.getActivity(
-                context, 4, editIntent,
-                PendingIntent.FLAG_IMMUTABLE
-            )
+        val bundle = Bundle()
+        bundle.putSerializable("task", alarmItem)
+        val deepLinkEditIntent = NavDeepLinkBuilder(context)
+            .setComponentName(MainActivity::class.java)
+            .setGraph(R.navigation.nav_graph)
+            .setDestination(R.id.addTaskFragment)
+            .setArguments(bundle)
+            .createPendingIntent()
 
         // create notification
         val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
@@ -88,7 +87,7 @@ class InAppNotification(private val context: Context) {
             .addAction(
                 R.drawable.ic_launcher_foreground,
                 context.getString(R.string.edit),
-                editPendingIntent
+                deepLinkEditIntent
             )
             .addAction(
                 R.drawable.ic_launcher_background,
