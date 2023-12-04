@@ -13,45 +13,19 @@ Add New Task Time       |   Add New Task Cancel            | Task Alarm         
 
 ## Features
 
-### Splash Screen:
-
-- Display a welcoming screen with your app's logo or a catchy image.
-- Set a short loading time to provide a smooth transition to the main screen.
-
-### Login Page:
-
-- Create a user authentication system with a username/email and password.
-- Allow users to create accounts or log in with existing ones.
-- Implement secure authentication practices.
-
-### Registration:
-
-- Enable users to sign up for a new account with the necessary details.
-- Implement validation for email addresses and secure password policies.
-
-### View Pager:
-
-- Use a ViewPager to allow users to swipe between different screens.
-- Include features like Variety Recipe, Healthy food, Popular Recipes, etc., on different pages.
-
-### Recipe List:
-
-- Display a list of recipes with key details like title, image, and a brief description.
-- Implement a responsive layout for different screen sizes and orientations.
-
-### Recipe Search:
-
-- Integrate a search bar for users to enter keywords or ingredients.
-- Implement real-time filtering of recipes based on search queries.
-
-### User Profile:
-
-- Allow users to set up and edit their profiles.
-
-### Recipe Details:
-
-- Create a detailed view for each recipe with ingredients, instructions, and images.
-
+1. Create a mobile app with at least two screens: one for displaying a list of tasks and another for
+adding/editing tasks.  
+2. Use the MVVM (Model-View-ViewModel) architecture for organizing your code.  
+3. Implement a local database to store tasks using the Room Persistence Library.  
+4. The app should have the following features:  
+- Display a list of tasks with their names, due dates, and completion status.  
+- Ability to add a new task with a name, description, and due date.  
+- Ability to edit an existing task.  
+- Ability to mark a task as completed and remove it from the list.  
+- Set an alarm reminder when adding or updating a task. The alarm should trigger at the task's
+due date.  
+- Cancel the alarm when deleting a task.  
+  
 
 ## Description
 In the recipe search app, users seamlessly register and log in to personalize their culinary journey. Upon login, a curated Recipe List is presented and fetched through a streamlined API call. The app empowers users with a robust Recipe Search feature, allowing them to find specific recipes using keywords or ingredients. Real-time API calls dynamically filter and display search results, ensuring a tailored culinary exploration. Users can delve into Recipe Details, offering comprehensive insights into ingredients and step-by-step instructions. This clean and efficient design prioritizes a user-centric experience, making recipe discovery, search, and exploration intuitive and enjoyable.  
