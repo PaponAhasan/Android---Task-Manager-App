@@ -17,7 +17,7 @@ Add New Task Time       |   Add New Task Cancel            | Task Alarm         
 adding/editing tasks.  
 - Use the MVVM (Model-View-ViewModel) architecture for organizing your code.  
 - Implement a local database to store tasks using the Room Persistence Library.  
-- The app have the following features:  
+ - The app have the following features:  
  - Display a list of tasks with their names, due dates, and completion status.  
  - Ability to add a new task with a name, description, and due date.  
  - Ability to edit an existing task.  
