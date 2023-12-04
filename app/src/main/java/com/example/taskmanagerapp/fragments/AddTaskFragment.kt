@@ -177,7 +177,7 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         val dateFormat = SimpleDateFormat("EEE-dd-MMM", Locale.getDefault())
 
         val time = today.time
-        val timeFormat = SimpleDateFormat("HH:mm a", Locale.getDefault())
+        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
         todayDate = dateFormat.format(today)
         todayTime = timeFormat.format(time)
@@ -231,7 +231,7 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
         calendar.set(Calendar.MINUTE, minute)
 
-        val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+        val timeFormat = SimpleDateFormat("hh:mm", Locale.getDefault())
         val selectedTime = timeFormat.format(calendar.time)
         binding.etTaskTime.setText(selectedTime)
     }

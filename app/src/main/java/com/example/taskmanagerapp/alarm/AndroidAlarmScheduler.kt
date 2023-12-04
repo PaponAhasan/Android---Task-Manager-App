@@ -6,11 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.taskmanagerapp.model.TaskList
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.Date
+import java.util.GregorianCalendar
 import java.util.Locale
 
 class AndroidAlarmScheduler(
@@ -18,15 +20,13 @@ class AndroidAlarmScheduler(
 ) : AlarmScheduler {
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
-    private lateinit var tasksTime: LocalDateTime
     private lateinit var calendar: Calendar
     override fun schedule(item: TaskList) {
-
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra("alarmItem", item)
         }
 
-        alarmTime(item.dateText, item.timeText)
+        createAnAlarm(item.dateText, item.timeText)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(
@@ -66,63 +66,30 @@ class AndroidAlarmScheduler(
         )
     }
 
-    private fun alarmTime(taskDate: String, taskTime: String) {
-//        val today = Calendar.getInstance().time
-//        val dateFormat = SimpleDateFormat("EEE-dd-MMM", Locale.getDefault())
-//
-//        val time = today.time
-//        val timeFormat = SimpleDateFormat("HH:mm a", Locale.getDefault())
-//
-//        val todayDate = dateFormat.format(today)
-//        val todayTime = timeFormat.format(time)
-//
-//        //current Time
-//        val currentDateTimeString = "$todayDate $todayTime"
-//        val currentDateFormatter =
-//            SimpleDateFormat("EEE-dd-MMM HH:mm a", Locale.getDefault())
-//        val currentDate = currentDateFormatter.parse(currentDateTimeString)
-//        val currentSeconds = currentDate?.time?.div(1000)
-//        //selected Time
-//        val selectedDateTimeString = "$taskDate $taskTime"
-//        val selectedDateFormatter =
-//            SimpleDateFormat("EEE-dd-MMM HH:mm a", Locale.getDefault())
-//        val selectedDate = selectedDateFormatter.parse(selectedDateTimeString)
-//        var selectedSeconds = selectedDate?.time?.div(1000)
-//
-//        if (selectedSeconds != null && selectedSeconds < currentSeconds!!) {
-//            // The selected time is in the past, add a day to it
-//            val oneDayInSeconds = 24 * 60 * 60
-//            selectedSeconds += oneDayInSeconds
-//        }
-//
-//        val taskTime = selectedSeconds?.minus(currentSeconds!!)
-//        tasksTime = LocalDateTime.now().plusSeconds(taskTime!!)
-//        Log.d("MainActivity", "Seconds since epoch: $tasksTime")
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    fun createAnAlarm(taskDate: String, taskTime: String) {
+        try {
+            val items: List<String> = taskDate.split("-")
+            val month = items[0]
+            val dd = items[1]
+            val year = items[2]
 
-        // Format task date and time strings into a Date object
-        val dateFormat = SimpleDateFormat("E-dd-MMM", Locale.getDefault())
-        val timeFormat = SimpleDateFormat("HH:mm a", Locale.getDefault())
+            val itemTime: List<String> = taskTime.split(":")
+            val hour = itemTime[0]
+            val min = itemTime[1]
 
-        val date: Date = dateFormat.parse(taskDate) ?: return
-        val time: Date = timeFormat.parse(taskTime) ?: return
+            val curCal: Calendar = GregorianCalendar()
+            curCal.timeInMillis = System.currentTimeMillis()
+            val cal: Calendar = GregorianCalendar()
+            cal[Calendar.HOUR_OF_DAY] = hour.toInt()
+            cal[Calendar.MINUTE] = min.toInt()
+            cal[Calendar.SECOND] = 0
+            cal[Calendar.MILLISECOND] = 0
+            cal[Calendar.DATE] = dd.toInt()
 
-        val calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(
-                Calendar.YEAR,
-                Calendar.getInstance().get(Calendar.YEAR)
-            ) // assuming you want to set the alarm for the current year
-            set(Calendar.MONTH, date.month)
-            set(Calendar.DAY_OF_MONTH, date.date)
-            set(Calendar.HOUR_OF_DAY, time.hours)
-            set(Calendar.MINUTE, time.minutes)
-            set(Calendar.SECOND, 0)
+            this.calendar = cal
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
-//        if (calendar.before(Calendar.getInstance())) {
-//            calendar.add(Calendar.DATE, 1);
-//        }
-
-        this.calendar = calendar
     }
 }
