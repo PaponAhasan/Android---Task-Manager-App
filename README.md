@@ -59,5 +59,5 @@ Here are some additional things you could include in your README.md file:
 - [Vectors, photos](https://www.freepik.com/)
 - [Google Fonts](https://fonts.google.com/)
 - [Google Icons](https://fonts.google.com/icons)
-- [Room documentation]([https://forkify-api.herokuapp.com/](https://developer.android.com/training/data-storage/room)https://developer.android.com/training/data-storage/room)
+- [Room documentation](https://developer.android.com/training/data-storage/room)
 - [Dot symbol](https://symbolsdb.com/dot-symbol)
