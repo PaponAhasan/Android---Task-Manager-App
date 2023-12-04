@@ -227,11 +227,12 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     }
 
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
+
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
         calendar.set(Calendar.MINUTE, minute)
 
-        val timeFormat = SimpleDateFormat("hh:mm", Locale.getDefault())
+        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         val selectedTime = timeFormat.format(calendar.time)
         binding.etTaskTime.setText(selectedTime)
     }
