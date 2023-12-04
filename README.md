@@ -32,9 +32,9 @@ In the recipe search app, users seamlessly register and log in to personalize th
 ## Technologies Used
 - MVVM architectural pattern: Version 2.6.2
 - Kotlin coroutines: Version 1.7.3
-- Retrofit Library: Version 2.9.0
+- Room Library: Version 2.6.0
 - Navigation: Version 2.7.5
-- glide: Version 4.14.2
+- Alarm manager
 - Shared Preference
 
 Getting Started  
@@ -49,17 +49,15 @@ Once you have installed the dependencies, you can run the application by followi
 - Run the project.
  
 ## Usage    
-The recipe search app simplifies culinary exploration with a user-friendly interface. Register and log in for a personalized experience, then effortlessly navigate through a curated Recipe List. Refine your search using the robust Recipe Search feature, revealing diverse dishes in real-time. Dive into Recipe Details for comprehensive insights into ingredients and instructions. Enjoy a seamless and enjoyable cooking journey with this intuitive app.  
-
+The goal of this assignment is to assess the candidate's ability to create a simple task manager mobile app using Kotlin, demonstrate a good understanding of database operations, and implement an alarm reminder feature for tasks. 
 
 ## Contact
 For any inquiries or feedback, please contact Author: <ins>Rakibul Ahasan</ins>  
 
 Here are some additional things you could include in your README.md file:  
 
-- [API documentation](https://forkify-api.herokuapp.com/)
 - [Vectors, photos](https://www.freepik.com/)
 - [Google Fonts](https://fonts.google.com/)
 - [Google Icons](https://fonts.google.com/icons)
-- [API documentation](https://forkify-api.herokuapp.com/)
+- [Room documentation]([https://forkify-api.herokuapp.com/](https://developer.android.com/training/data-storage/room)https://developer.android.com/training/data-storage/room)
 - [Dot symbol](https://symbolsdb.com/dot-symbol)
