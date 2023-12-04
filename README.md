@@ -13,18 +13,18 @@ Add New Task Time       |   Add New Task Cancel            | Task Alarm         
 
 ## Features
 
-1. Create a mobile app with at least two screens: one for displaying a list of tasks and another for
+- Create a mobile app with at least two screens: one for displaying a list of tasks and another for
 adding/editing tasks.  
-2. Use the MVVM (Model-View-ViewModel) architecture for organizing your code.  
-3. Implement a local database to store tasks using the Room Persistence Library.  
-4. The app have the following features:  
-  - Display a list of tasks with their names, due dates, and completion status.  
-  - Ability to add a new task with a name, description, and due date.  
-  - Ability to edit an existing task.  
-  - Ability to mark a task as completed and remove it from the list.  
-  - Set an alarm reminder when adding or updating a task. The alarm should trigger at the task's
-  due date.  
-  - Cancel the alarm when deleting a task.  
+- Use the MVVM (Model-View-ViewModel) architecture for organizing your code.  
+- Implement a local database to store tasks using the Room Persistence Library.  
+- The app have the following features:  
+    - Display a list of tasks with their names, due dates, and completion status.  
+    - Ability to add a new task with a name, description, and due date.  
+    - Ability to edit an existing task.  
+    - Ability to mark a task as completed and remove it from the list.  
+    - Set an alarm reminder when adding or updating a task. The alarm should trigger at the task's
+    due date.  
+    - Cancel the alarm when deleting a task.  
   
 
 ## Description
