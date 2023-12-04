@@ -1,6 +1,11 @@
 package com.example.taskmanagerapp.fragments
 
+import android.Manifest
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,14 +13,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
 import androidx.activity.addCallback
+import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanagerapp.R
 import com.example.taskmanagerapp.adapter.ITaskRvAdapter
 import com.example.taskmanagerapp.adapter.TaskAdapter
+import com.example.taskmanagerapp.alarm.notification.ActionStopReceiver
+import com.example.taskmanagerapp.alarm.notification.InAppNotification
 import com.example.taskmanagerapp.database.TaskRoomDatabase
 import com.example.taskmanagerapp.databinding.FragmentTasksBinding
 import com.example.taskmanagerapp.model.TaskList
@@ -45,8 +54,11 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        checkPermission()
 
         binding.ivCalander.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -75,7 +87,6 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
 
         adapter = TaskAdapter(requireContext(), this)
         binding.tasksRecyclerView.adapter = adapter
-
         binding.tasksRecyclerView.layoutManager = LinearLayoutManager(context)
 
         taskViewModel.getAllTasks().observe(viewLifecycleOwner) { tasks ->
@@ -91,6 +102,39 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             requireActivity().finish()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun checkPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                arrayOf(
+                    Manifest.permission.POST_NOTIFICATIONS
+                ),
+                101
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == 101) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //..
+            } else {
+                checkPermission()
+            }
         }
     }
 
@@ -130,6 +174,7 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
                             DialogListener {
                             override fun onConfirmed() {
                                 taskViewModel.deleteAllTasks()
+                                binding.lottieAnimationView.visibility = View.VISIBLE
                                 openSeekBar("Task Clear...")
                             }
 
@@ -147,11 +192,10 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-
+        openSeekBar("$dayOfMonth-$month-$year")
     }
 
     override fun deleteTaskClicked(task: TaskList) {
-
         val image = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_delete)
         val message = "Are your sure deleted this task?"
         ViewUtils.viewDialogResponse(
@@ -162,12 +206,17 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
                 DialogListener {
                 override fun onConfirmed() {
                     taskViewModel.delete(task)
+                    //stop alarm
+                    val actionIntent = Intent(context, ActionStopReceiver::class.java).apply {
+                        action = InAppNotification.ACTION_STOP
+                        putExtra("alarmItem", task)
+                    }
+                    context?.sendBroadcast(actionIntent)
+                    //sms show
                     openSeekBar("Task Deleted...")
                 }
 
-                override fun onCanceled() {
-
-                }
+                override fun onCanceled() {}
             })
     }
 
@@ -195,6 +244,7 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
             false
         )
 
+        //show dialog sms
         val image = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_success)
         val message = "Are your sure you want to mark this task as completed"
         ViewUtils.viewDialogResponse(
@@ -208,10 +258,7 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
                     taskViewModel.update(insertTask)
                     openSeekBar("Successfully task completed...")
                 }
-
-                override fun onCanceled() {
-
-                }
+                override fun onCanceled() {}
             })
     }
 

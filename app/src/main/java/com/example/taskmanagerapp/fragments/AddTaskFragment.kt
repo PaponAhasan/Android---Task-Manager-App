@@ -2,7 +2,6 @@ package com.example.taskmanagerapp.fragments
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,16 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TimePicker
-import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.taskmanagerapp.R
-import com.example.taskmanagerapp.alarm.AlarmItem
-import com.example.taskmanagerapp.alarm.AlarmScheduler
 import com.example.taskmanagerapp.alarm.AndroidAlarmScheduler
 import com.example.taskmanagerapp.database.TaskRoomDatabase
 import com.example.taskmanagerapp.databinding.FragmentAddTaskBinding
@@ -32,7 +27,6 @@ import com.example.taskmanagerapp.viewmodel.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.Locale
 
@@ -44,14 +38,9 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     }
 
     private lateinit var taskViewModel: TaskViewModel
-
     private var timePickerDialog: TimePickerDialog? = null
-
     private lateinit var alarmScheduler: AndroidAlarmScheduler
-    private var alarmItem: AlarmItem? = null
-
     private var taskId = ""
-
     private lateinit var todayDate: String
     private lateinit var todayTime: String
 
@@ -63,7 +52,6 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -71,14 +59,15 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         onDateTimePicker()
 
         val receivedBundle = arguments
+
         if (receivedBundle != null) {
-            val task = receivedBundle.getSerializable("task", TaskList::class.java)
-            binding.etTaskTitle.setText(task?.titleText)
-            binding.etTaskDescription.setText(task?.bodyText)
-            binding.etTaskEvent.setText(task?.eventText)
-            binding.etTaskDate.setText(task?.dateText)
-            binding.etTaskTime.setText(task?.timeText)
-            taskId = task?.id.toString()
+            val task = receivedBundle.getSerializable("task") as TaskList
+            binding.etTaskTitle.setText(task.titleText)
+            binding.etTaskDescription.setText(task.bodyText)
+            binding.etTaskEvent.setText(task.eventText)
+            binding.etTaskDate.setText(task.dateText)
+            binding.etTaskTime.setText(task.timeText)
+            taskId = task.id.toString()
         }
 
         binding.btnSave.setOnClickListener {
@@ -106,32 +95,10 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 //                bundle.putSerializable("tasks", insertTask)
 //                findNavController().navigate(R.id.action_addTaskFragment_to_tasksFragment, bundle)
 
-                //current Time
-                val currentDateTimeString = "$todayDate $todayTime"
-                val currentDateFormatter =
-                    SimpleDateFormat("EEE-dd-MMM HH:mm a", Locale.getDefault())
-                val currentDate = currentDateFormatter.parse(currentDateTimeString)
-                val currentSeconds = currentDate?.time?.div(1000)
-                //selected Time
-                val selectedDateTimeString = "$taskDate $taskTime"
-                val selectedDateFormatter =
-                    SimpleDateFormat("EEE-dd-MMM HH:mm a", Locale.getDefault())
-                val selectedDate = selectedDateFormatter.parse(selectedDateTimeString)
-                val selectedSeconds = selectedDate?.time?.div(1000)
-
                 try {
-                    val taskTime = selectedSeconds?.minus(currentSeconds!!)
-                    Log.d("MainActivity", "Seconds since epoch: $taskTime")
-                    //alarm
-                    alarmItem = AlarmItem(
-                        LocalDateTime.now().plusSeconds(taskTime!!),
-                        taskTitle
-                    )
                     // Schedule the alarm
                     alarmScheduler = AndroidAlarmScheduler(requireContext())
-                    alarmScheduler.schedule(alarmItem!!)
-                    // To cancel the alarm
-                    // alarmScheduler.cancel(alarmItem)
+                    alarmScheduler.schedule(insertTask)
                 } catch (e: ParseException) {
                     Log.e("Alarm", "Error parsing date and time", e)
                 }
@@ -145,10 +112,12 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                 )[TaskViewModel::class.java]
 
                 if (receivedBundle != null) {
+                    // update the task
                     insertTask.id = taskId.toInt()
                     taskViewModel.update(insertTask)
                     openSeekBar("Task update..")
                 } else {
+                    // insert the task
                     taskViewModel.insert(insertTask)
                     openSeekBar("Task insert..")
                 }
@@ -169,9 +138,7 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                         findNavController().navigate(R.id.action_addTaskFragment_to_tasksFragment)
                     }
 
-                    override fun onCanceled() {
-
-                    }
+                    override fun onCanceled() {}
                 })
         }
     }
@@ -182,10 +149,6 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             msg, Snackbar.LENGTH_LONG
         )
         mySeekBar.show()
-    }
-
-    private fun getCurrentDateTime() {
-
     }
 
     private fun onDateTimePicker() {
