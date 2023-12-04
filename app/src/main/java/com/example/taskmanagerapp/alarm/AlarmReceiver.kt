@@ -3,24 +3,20 @@ package com.example.taskmanagerapp.alarm
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Build
-import android.provider.Settings
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.taskmanagerapp.alarm.notification.InAppNotification
-import com.example.taskmanagerapp.alarm.sound.AndroidSoundPlayer
+import com.example.taskmanagerapp.alarm.sound.MediaPlayerService
+import com.example.taskmanagerapp.model.TaskList
 
 class AlarmReceiver : BroadcastReceiver() {
-
-    private lateinit var mp: MediaPlayer
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onReceive(context: Context?, intent: Intent?) {
         //Handle the alarm action here
-
-        val alarmItem = intent?.getSerializableExtra("alarmItem") as AlarmItem
-        val message = alarmItem.message
+        val alarmItem = intent?.getSerializableExtra("alarmItem") as TaskList
+        val message = alarmItem.titleText
         Log.d("TAG", message)
 
         //show a notification
@@ -28,7 +24,8 @@ class AlarmReceiver : BroadcastReceiver() {
         service.showNotification(alarmItem)
 
         //play a sound
-        val player = AndroidSoundPlayer()
-        player.startPlay(context)
+        val serviceIntent = Intent(context, MediaPlayerService::class.java)
+        context.startService(serviceIntent)
+
     }
 }

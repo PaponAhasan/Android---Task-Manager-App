@@ -14,7 +14,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.taskmanagerapp.MainActivity
 import com.example.taskmanagerapp.R
-import com.example.taskmanagerapp.alarm.AlarmItem
+import com.example.taskmanagerapp.model.TaskList
 
 class InAppNotification(private val context: Context) {
 
@@ -23,10 +23,12 @@ class InAppNotification(private val context: Context) {
     companion object {
         const val CHANNEL_ID = "upcoming_task"
         const val NOTIFICATION_ID = 0
+        const val ACTION_EDIT = "STOP"
+        const val ACTION_STOP = "STOP"
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    fun showNotification(alarmItem: AlarmItem) {
+    fun showNotification(alarmItem: TaskList) {
         // Intent Activity
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -39,9 +41,9 @@ class InAppNotification(private val context: Context) {
 
         // Intent Broadcast Receiver
         val actionIntent = Intent(context, ActionStopReceiver::class.java).apply {
+            action = ACTION_STOP
             putExtra("alarmItem", alarmItem)
         }
-
         val actionPendingIntent =
             PendingIntent.getBroadcast(context, 2, actionIntent, PendingIntent.FLAG_IMMUTABLE)
 
@@ -52,29 +54,52 @@ class InAppNotification(private val context: Context) {
         val serviceIntent =
             PendingIntent.getService(context, 3, intentService, PendingIntent.FLAG_IMMUTABLE)*/
 
+        // Intent Fragment
+        val editIntent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            action = ACTION_EDIT
+            putExtra("FRAGMENT_KEY", "EditFragment")
+            putExtra("DATA_KEY", alarmItem)
+        }
+
+        val editPendingIntent =
+            PendingIntent.getActivity(
+                context, 4, editIntent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+
         // create notification
         val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(alarmItem.message)
-            .setContentText(alarmItem.time.toString())
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentTitle(alarmItem.titleText)
+            .setContentText(alarmItem.timeText)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
-            //automatically clear when the user clicks
-            .setAutoCancel(true)
             //set visibility in lock screen
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             //small icon color
             .setColor(Color.GREEN)
             // set one time notification
-            .setOnlyAlertOnce(false)
+            .setOnlyAlertOnce(true)
+            // Cant cancel your notification
+            .setOngoing(true)
             //button action
-            .addAction(R.drawable.ic_launcher_background, "STOP", actionPendingIntent)
-            //.addAction(R.drawable.ic_launcher_foreground, "SERVICE", serviceIntent)
-            .build()
+            .addAction(
+                R.drawable.ic_launcher_foreground,
+                context.getString(R.string.edit),
+                editPendingIntent
+            )
+            .addAction(
+                R.drawable.ic_launcher_background,
+                context.getString(R.string.stop),
+                actionPendingIntent
+            )
+            //automatically clear when the user clicks
+            .setAutoCancel(false)
 
         if (checkNotificationPermission()) {
-            notificationManager.notify(NOTIFICATION_ID, notificationBuilder)
+            notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
         }
     }
 
