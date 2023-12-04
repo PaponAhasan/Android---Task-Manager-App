@@ -108,10 +108,6 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
         } else binding.lottieAnimationView.visibility = View.GONE
     }
 
-    companion object {
-        const val TAG = "TasksFragment"
-    }
-
     private fun popUpMenu(view: View) {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.inflate(R.menu.top_menu)
@@ -217,5 +213,9 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
 
                 }
             })
+    }
+
+    companion object {
+        const val TAG = "TasksFragment"
     }
 }
