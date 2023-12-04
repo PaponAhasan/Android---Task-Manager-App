@@ -2,6 +2,7 @@ package com.example.taskmanagerapp.fragments
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.taskmanagerapp.R
 import com.example.taskmanagerapp.alarm.AndroidAlarmScheduler
+import com.example.taskmanagerapp.alarm.notification.ActionStopReceiver
+import com.example.taskmanagerapp.alarm.notification.InAppNotification
 import com.example.taskmanagerapp.database.TaskRoomDatabase
 import com.example.taskmanagerapp.databinding.FragmentAddTaskBinding
 import com.example.taskmanagerapp.model.TaskList
@@ -55,21 +58,25 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initialization()
+
         //Time & date set
         onDateTimePicker()
-
+        //get task, for update task
         val receivedBundle = arguments
-
+        // if receivedBundle is not null, we can update task
         if (receivedBundle != null) {
             val task = receivedBundle.getSerializable("task") as TaskList
+            // set previous data for update
             binding.etTaskTitle.setText(task.titleText)
             binding.etTaskDescription.setText(task.bodyText)
             binding.etTaskEvent.setText(task.eventText)
             binding.etTaskDate.setText(task.dateText)
             binding.etTaskTime.setText(task.timeText)
+            //get previous taskId
             taskId = task.id.toString()
         }
-
+        // save/update task
         binding.btnSave.setOnClickListener {
             val taskTitle = binding.etTaskTitle.text.toString()
             val taskDes = binding.etTaskDescription.text.toString()
@@ -91,41 +98,51 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             ) {
                 openSeekBar("Text required..")
             } else {
-//                val bundle = Bundle()
-//                bundle.putSerializable("tasks", insertTask)
-//                findNavController().navigate(R.id.action_addTaskFragment_to_tasksFragment, bundle)
-
+                if (receivedBundle != null) {
+                    //stop alarm
+                    val actionIntent = Intent(context, ActionStopReceiver::class.java).apply {
+                        action = InAppNotification.ACTION_STOP
+                        putExtra("alarmItem", insertTask)
+                    }
+                    context?.sendBroadcast(actionIntent)
+                    try {
+                        // update the task
+                        //insertTask.id = taskId.toLong()
+                        //taskViewModel.update(insertTask)
+                        taskViewModel.updateExistingTasks(
+                            taskId.toLong(),
+                            taskTitle,
+                            taskDes,
+                            taskEvent,
+                            taskDate,
+                            taskTime
+                        )
+                        openSeekBar("Task update..")
+                    } catch (e: ParseException) {
+                        Log.e(TAG, "Error parsing update task", e)
+                    }
+                } else {
+                    try {
+                        // insert the task
+                        taskViewModel.insert(insertTask)
+                        openSeekBar("Task insert..")
+                    } catch (e: ParseException) {
+                        Log.e(TAG, "Error parsing insert task", e)
+                    }
+                }
+                // Schedule the alarm
                 try {
-                    // Schedule the alarm
-                    alarmScheduler = AndroidAlarmScheduler(requireContext())
                     alarmScheduler.schedule(insertTask)
                 } catch (e: ParseException) {
-                    Log.e("Alarm", "Error parsing date and time", e)
+                    Log.e(TAG, "Error parsing date and time", e)
                 }
-
-                val taskDao = TaskRoomDatabase.getDatabase(requireContext()).getTaskDao()
-                val repository = TaskRepository(taskDao)
-                val taskViewModelFactory = ViewModelFactory(repository)
-                taskViewModel = ViewModelProvider(
-                    this,
-                    taskViewModelFactory
-                )[TaskViewModel::class.java]
-
-                if (receivedBundle != null) {
-                    // update the task
-                    insertTask.id = taskId.toInt()
-                    taskViewModel.update(insertTask)
-                    openSeekBar("Task update..")
-                } else {
-                    // insert the task
-                    taskViewModel.insert(insertTask)
-                    openSeekBar("Task insert..")
-                }
+                // navigate the task list fragment
                 findNavController().navigate(R.id.action_addTaskFragment_to_tasksFragment)
             }
         }
-
+        //for back stack
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            //before back stack alert dialog message
             val image = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_delete)
             val message = "Are your sure? Quit without saving?"
             ViewUtils.viewDialogResponse(
@@ -143,12 +160,16 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         }
     }
 
-    private fun openSeekBar(msg: String) {
-        val mySeekBar = Snackbar.make(
-            requireActivity().findViewById(R.id.mainLayout),
-            msg, Snackbar.LENGTH_LONG
-        )
-        mySeekBar.show()
+    private fun initialization() {
+        alarmScheduler = AndroidAlarmScheduler(requireContext())
+        //initialization for database - room
+        val taskDao = TaskRoomDatabase.getDatabase(requireContext()).getTaskDao()
+        val repository = TaskRepository(taskDao)
+        val taskViewModelFactory = ViewModelFactory(repository)
+        taskViewModel = ViewModelProvider(
+            this,
+            taskViewModelFactory
+        )[TaskViewModel::class.java]
     }
 
     private fun onDateTimePicker() {
@@ -213,5 +234,17 @@ class AddTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
         val selectedTime = timeFormat.format(calendar.time)
         binding.etTaskTime.setText(selectedTime)
+    }
+
+    private fun openSeekBar(msg: String) {
+        val mySeekBar = Snackbar.make(
+            requireActivity().findViewById(R.id.mainLayout),
+            msg, Snackbar.LENGTH_LONG
+        )
+        mySeekBar.show()
+    }
+
+    companion object {
+        const val TAG = "AddTasksFragment"
     }
 }

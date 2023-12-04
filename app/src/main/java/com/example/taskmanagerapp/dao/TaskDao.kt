@@ -21,4 +21,13 @@ interface TaskDao {
 
     @Query("Select * from tasks_table order by id DESC")
     fun getAllTasks(): LiveData<List<TaskList>>
+
+    @Query(
+        "UPDATE tasks_table SET titleText = :titleText, bodyText = :bodyText, eventText = :eventText, " +
+                "dateText = :dateText, timeText = :timeText WHERE id = :id"
+    )
+    fun updateExistingTasks(
+        id: Long, titleText: String, bodyText: String, eventText: String, dateText: String,
+        timeText: String
+    )
 }

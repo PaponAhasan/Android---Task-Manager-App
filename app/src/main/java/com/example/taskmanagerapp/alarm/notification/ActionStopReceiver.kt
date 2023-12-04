@@ -12,22 +12,18 @@ import com.example.taskmanagerapp.model.TaskList
 
 class ActionStopReceiver : BroadcastReceiver() {
     private lateinit var alarmScheduler: AndroidAlarmScheduler
-
     override fun onReceive(context: Context?, intent: Intent?) {
-
         //clear notification
         val notificationManager = context?.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(InAppNotification.NOTIFICATION_ID)
-
         // Schedule the alarm
         val alarmItem = intent?.getSerializableExtra("alarmItem") as TaskList
         alarmScheduler = AndroidAlarmScheduler(context)
         alarmScheduler.cancel(alarmItem)
-
         //stop a sound
         val serviceIntent = Intent(context, MediaPlayerService::class.java)
         context.stopService(serviceIntent)
-
+        //show toast message
         Toast.makeText(context, "STOP YOUR ALARM", Toast.LENGTH_SHORT).show()
     }
 }

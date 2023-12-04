@@ -13,23 +13,18 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.navigation.NavDeepLink
 import androidx.navigation.NavDeepLinkBuilder
 import com.example.taskmanagerapp.MainActivity
 import com.example.taskmanagerapp.R
 import com.example.taskmanagerapp.model.TaskList
 
 class InAppNotification(private val context: Context) {
-
     private val notificationManager = NotificationManagerCompat.from(context)
-
     companion object {
         const val CHANNEL_ID = "upcoming_task"
         const val NOTIFICATION_ID = 0
-        const val ACTION_EDIT = "STOP"
         const val ACTION_STOP = "STOP"
     }
-
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun showNotification(alarmItem: TaskList) {
         // Intent Activity
@@ -57,7 +52,7 @@ class InAppNotification(private val context: Context) {
         val serviceIntent =
             PendingIntent.getService(context, 3, intentService, PendingIntent.FLAG_IMMUTABLE)*/
 
-        // Intent Fragment
+        // Fragment of NavDeepLink
         val bundle = Bundle()
         bundle.putSerializable("task", alarmItem)
         val deepLinkEditIntent = NavDeepLinkBuilder(context)
@@ -81,7 +76,7 @@ class InAppNotification(private val context: Context) {
             .setColor(Color.GREEN)
             // set one time notification
             .setOnlyAlertOnce(true)
-            // Cant cancel your notification
+            // Can't cancel your notification
             .setOngoing(true)
             //button action
             .addAction(

@@ -74,32 +74,35 @@ class CompletedFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskR
 
         taskViewModel.getAllTasks().observe(viewLifecycleOwner) { tasks ->
             completeTasks = arrayListOf()
-
             tasks?.let {
+                //get Complete Tasks List
                 getInCompleteTasks(it)
+                //for recycler view show Complete tasks
                 adapter.updateTaskList(completeTasks)
             }
+            //if tasks list all data empty show animation image
             onHandleLottieAnimationView()
         }
     }
 
     private fun getInCompleteTasks(tasks: List<TaskList>) {
         tasks.forEach {
+            // if statusText is false, task is Completed
             if (!it.statusText) {
                 completeTasks.add(it)
+                //if isCompleted is true then tasksList have at
+                // least one Completed tasks
                 isCompleted = true
             }
         }
     }
 
     private fun onHandleLottieAnimationView() {
+        //if isCompleted is true then tasksList have at
+        // least one Completed tasks
         if (isCompleted) {
             binding.lottieAnimationView.visibility = View.GONE
         } else binding.lottieAnimationView.visibility = View.VISIBLE
-    }
-
-    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-
     }
 
     override fun deleteTaskClicked(task: TaskList) {
@@ -138,4 +141,7 @@ class CompletedFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskR
         mySeekBar.show()
     }
 
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        openSeekBar("$dayOfMonth-$month-$year")
+    }
 }

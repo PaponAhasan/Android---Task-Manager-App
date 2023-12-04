@@ -33,4 +33,13 @@ class TaskRepository(private val taskDao: TaskDao) {
     }
 
     val getAllTasks: LiveData<List<TaskList>> = taskDao.getAllTasks()
+
+    suspend fun updateExistingTasks(
+        id: Long, titleText: String, bodyText: String, eventText: String, dateText: String,
+        timeText: String
+    ) {
+        withContext(Dispatchers.IO) {
+            taskDao.updateExistingTasks(id, titleText, bodyText, eventText, dateText, timeText)
+        }
+    }
 }

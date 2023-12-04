@@ -10,12 +10,10 @@ class ApplicationChannel: Application() {
     companion object{
         private const val ALARM_CHANNEL_NAME = "Upcoming Task"
     }
-
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
     }
-
     private fun createNotificationChannel() {
         // Simple notification channel
         val channel = NotificationChannel(

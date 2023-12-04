@@ -27,4 +27,11 @@ class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
     }
 
     fun getAllTasks(): LiveData<List<TaskList>> = taskRepository.getAllTasks
+
+    fun updateExistingTasks(
+        id: Long, titleText: String, bodyText: String, eventText: String, dateText: String,
+        timeText: String
+    ) = viewModelScope.launch(Dispatchers.IO) {
+        taskRepository.updateExistingTasks(id, titleText, bodyText, eventText, dateText, timeText)
+    }
 }

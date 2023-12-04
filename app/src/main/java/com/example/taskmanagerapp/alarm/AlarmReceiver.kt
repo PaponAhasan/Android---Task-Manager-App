@@ -14,7 +14,9 @@ class AlarmReceiver : BroadcastReceiver() {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onReceive(context: Context?, intent: Intent?) {
-        //Handle the alarm action here
+        /*Handle the alarm action here*/
+
+        //get alarm item message
         val alarmItem = intent?.getSerializableExtra("alarmItem") as TaskList
         val message = alarmItem.titleText
         Log.d("TAG", message)
@@ -23,7 +25,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val service = InAppNotification(context!!)
         service.showNotification(alarmItem)
 
-        //play a sound
+        //play a media
         val serviceIntent = Intent(context, MediaPlayerService::class.java)
         context.startService(serviceIntent)
 

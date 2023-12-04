@@ -34,19 +34,20 @@ class TaskAdapter(private val context: Context, private val listener: ITaskRvAda
         val currentTask = allTasks[position]
 
         holder.binding.tvTaskTitle.text = currentTask.titleText
+        //split date & time
         val dateComponents = currentTask.dateText.split("-")
         val dayOfWeek = dateComponents[0]
         val dayOfMonth = dateComponents[1]
         val month = dateComponents[2]
-
         holder.binding.tvWeek.text = dayOfWeek
         holder.binding.tvMonth.text = month
         holder.binding.tvDate.text = dayOfMonth
         holder.binding.tvTime.text = currentTask.timeText
+        // set popUpMenu for edit, delete
         holder.binding.tvMoreTask.setOnClickListener {
             popUpMenu(it, currentTask)
         }
-
+        //set the status
         if (currentTask.statusText) holder.binding.tvStatus.text = "UPCOMING"
         else holder.binding.tvStatus.text = "COMPLETED"
     }
@@ -76,6 +77,7 @@ class TaskAdapter(private val context: Context, private val listener: ITaskRvAda
         }
 
         popupMenu.show()
+        // set Force Show Icon in popupmenu
         val popup = PopupMenu::class.java.getDeclaredField("mPopup")
         popup.isAccessible = true
         val menu = popup.get(popupMenu)

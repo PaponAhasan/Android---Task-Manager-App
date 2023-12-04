@@ -15,5 +15,5 @@ data class TaskList(
     @ColumnInfo(name = "statusText") val statusText: Boolean
 ) : Serializable {
     @PrimaryKey(autoGenerate = true)
-    var id = 0
+    var id = 0L
 }

@@ -60,6 +60,7 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
 
         checkPermission()
 
+        //open calendar
         binding.ivCalander.setOnClickListener {
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR)
@@ -69,14 +70,16 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
             datePickerDialog.show()
         }
 
+        //go for the add task
         binding.fabAdTask.setOnClickListener {
             findNavController().navigate(R.id.action_tasksFragment_to_addTaskFragment)
         }
-
+        //open popup menu for edit, delete
         binding.ivMenu.setOnClickListener {
             popUpMenu(it)
         }
 
+        //get data from database- room
         val taskDao = TaskRoomDatabase.getDatabase(requireContext()).getTaskDao()
         val repository = TaskRepository(taskDao)
         val taskViewModelFactory = ViewModelFactory(repository)
@@ -85,61 +88,31 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
             taskViewModelFactory
         )[TaskViewModel::class.java]
 
+        //setup recycler view
         adapter = TaskAdapter(requireContext(), this)
         binding.tasksRecyclerView.adapter = adapter
         binding.tasksRecyclerView.layoutManager = LinearLayoutManager(context)
 
         taskViewModel.getAllTasks().observe(viewLifecycleOwner) { tasks ->
             inCompleteTasks = arrayListOf()
-
             tasks?.let {
+                //get InComplete Tasks List
                 getInCompleteTasks(it)
+                //for recycler view show InComplete tasks
                 adapter.updateTaskList(inCompleteTasks)
             }
+            //if tasks list all data empty show animation image
             onHandleLottieAnimationView(tasks)
         }
-
-
+        //for back stack
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             requireActivity().finish()
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun checkPermission() {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                arrayOf(
-                    Manifest.permission.POST_NOTIFICATIONS
-                ),
-                101
-            )
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    @Deprecated("Deprecated in Java")
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == 101) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //..
-            } else {
-                checkPermission()
-            }
-        }
-    }
-
     private fun getInCompleteTasks(tasks: List<TaskList>) {
         tasks.forEach {
+            // if statusText is true, task is InCompleted
             if (it.statusText) {
                 inCompleteTasks.add(it)
             } else isCompleted++
@@ -147,9 +120,77 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
     }
 
     private fun onHandleLottieAnimationView(tasks: List<TaskList>) {
+        // if isCompleted is equal the tasksList size then
+        // all tasks list are Completed task
         if (isCompleted == tasks.size) {
             binding.lottieAnimationView.visibility = View.VISIBLE
         } else binding.lottieAnimationView.visibility = View.GONE
+    }
+
+    override fun deleteTaskClicked(task: TaskList) {
+        //show dialog before deleting the task
+        val image = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_delete)
+        val message = "Are your sure deleted this task?"
+        ViewUtils.viewDialogResponse(
+            requireContext(),
+            image!!,
+            message,
+            object :
+                DialogListener {
+                override fun onConfirmed() {
+                    //delete task
+                    taskViewModel.delete(task)
+                    //stop alarm
+                    val actionIntent = Intent(context, ActionStopReceiver::class.java).apply {
+                        action = InAppNotification.ACTION_STOP
+                        putExtra("alarmItem", task)
+                    }
+                    context?.sendBroadcast(actionIntent)
+                    //sms show
+                    openSeekBar("Task Deleted...")
+                }
+                override fun onCanceled() {}
+            })
+    }
+
+    override fun updateTaskClicked(task: TaskList) {
+        val bundle = Bundle()
+        bundle.putSerializable("task", task)
+        findNavController().navigate(R.id.action_tasksFragment_to_addTaskFragment, bundle)
+    }
+
+    override fun updateTaskCompleted(task: TaskList) {
+        //stop alarm
+        val actionIntent = Intent(context, ActionStopReceiver::class.java).apply {
+            action = InAppNotification.ACTION_STOP
+            putExtra("alarmItem", task)
+        }
+        context?.sendBroadcast(actionIntent)
+
+        val insertTask = TaskList(
+            task.titleText,
+            task.bodyText,
+            task.eventText,
+            task.dateText,
+            task.timeText,
+            false
+        )
+        //show dialog sms
+        val image = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_success)
+        val message = "Are your sure you want to mark this task as completed"
+        ViewUtils.viewDialogResponse(
+            requireContext(),
+            image!!,
+            message,
+            object :
+                DialogListener {
+                override fun onConfirmed() {
+                    insertTask.id = task.id
+                    taskViewModel.update(insertTask)
+                    openSeekBar("Successfully task completed...")
+                }
+                override fun onCanceled() {}
+            })
     }
 
     private fun popUpMenu(view: View) {
@@ -161,7 +202,6 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
                     findNavController().navigate(R.id.action_tasksFragment_to_completedFragment)
                     return@setOnMenuItemClickListener true
                 }
-
                 R.id.actonDelete -> {
                     val image =
                         AppCompatResources.getDrawable(requireContext(), R.drawable.ic_delete)
@@ -194,32 +234,6 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         openSeekBar("$dayOfMonth-$month-$year")
     }
-
-    override fun deleteTaskClicked(task: TaskList) {
-        val image = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_delete)
-        val message = "Are your sure deleted this task?"
-        ViewUtils.viewDialogResponse(
-            requireContext(),
-            image!!,
-            message,
-            object :
-                DialogListener {
-                override fun onConfirmed() {
-                    taskViewModel.delete(task)
-                    //stop alarm
-                    val actionIntent = Intent(context, ActionStopReceiver::class.java).apply {
-                        action = InAppNotification.ACTION_STOP
-                        putExtra("alarmItem", task)
-                    }
-                    context?.sendBroadcast(actionIntent)
-                    //sms show
-                    openSeekBar("Task Deleted...")
-                }
-
-                override fun onCanceled() {}
-            })
-    }
-
     private fun openSeekBar(msg: String) {
         val mySeekBar = Snackbar.make(
             requireActivity().findViewById(R.id.mainLayout),
@@ -227,41 +241,37 @@ class TasksFragment : Fragment(), DatePickerDialog.OnDateSetListener, ITaskRvAda
         )
         mySeekBar.show()
     }
-
-    override fun updateTaskClicked(task: TaskList) {
-        val bundle = Bundle()
-        bundle.putSerializable("task", task)
-        findNavController().navigate(R.id.action_tasksFragment_to_addTaskFragment, bundle)
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun checkPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                arrayOf(
+                    Manifest.permission.POST_NOTIFICATIONS
+                ),
+                101
+            )
+        }
     }
-
-    override fun updateTaskCompleted(task: TaskList) {
-        val insertTask = TaskList(
-            task.titleText,
-            task.bodyText,
-            task.eventText,
-            task.dateText,
-            task.timeText,
-            false
-        )
-
-        //show dialog sms
-        val image = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_success)
-        val message = "Are your sure you want to mark this task as completed"
-        ViewUtils.viewDialogResponse(
-            requireContext(),
-            image!!,
-            message,
-            object :
-                DialogListener {
-                override fun onConfirmed() {
-                    insertTask.id = task.id
-                    taskViewModel.update(insertTask)
-                    openSeekBar("Successfully task completed...")
-                }
-                override fun onCanceled() {}
-            })
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == 101) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //..
+            } else {
+                checkPermission()
+            }
+        }
     }
-
     companion object {
         const val TAG = "TasksFragment"
     }
