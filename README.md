@@ -40,8 +40,6 @@ The goal of this assignment is to assess the candidate's ability to create a sim
 Getting Started  
 To get started, you will need to install the following dependencies:  
 
-- Forkify API
-
 Once you have installed the dependencies, you can run the application by following these steps:  
 
 - Clone the repository.  
